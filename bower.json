@@ -1,21 +1,16 @@
 {
-  "name": "ngFlowchart",
-  "version": "0.5.1",
-  "homepage": "https://github.com/ONE-LOGIC/ngFlowchart",
+  "name": "ngBBFlowchart",
+  "version": "0.1.1",
+  "homepage": "https://github.com/unkn0wn-kgb/ngFlowchart.git",
   "authors": [
-    "per.fuchs@onelogic.de"
+    "tim@buddybid.com"
   ],
-  "description": "Customizable drag & drop flowchart directive for AngularJS",
+  "description": "Customizable drag & drop flowchart directive for AngularJS clone from ONE-LOGIC/ngFlowchart",
   "main": [
     "dist/ngFlowchart.js",
     "app/flowchart/flowchart.css"
   ],
-  "keywords": [
-    "angular",
-    "angularjs",
-    "flowchart",
-    "graph"
-  ],
+  "keywords": [],
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -26,13 +21,13 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "1.4.7",
+    "angular": "~1.6.4",
     "bind-polyfill": "1.0.0"
   },
   "devDependencies": {
-    "angular-mocks": "1.4.7"
+    "angular-mocks": "~1.6.4"
   },
   "resolutions": {
-    "angular": "1.4.7"
+    "angular": "~1.6.4"
   }
 }
