@@ -1,18 +1,15 @@
 if (!Function.prototype.bind) {
   Function.prototype.bind = function (oThis) {
-    if (typeof this !== "function") {
+    if (typeof this !== 'function') {
       // closest thing possible to the ECMAScript 5 internal IsCallable function
-      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
     }
 
-    var aArgs = Array.prototype.slice.call(arguments, 1), 
-        fToBind = this, 
+    var aArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
         fNOP = function () {},
         fBound = function () {
-          return fToBind.apply(this instanceof fNOP && oThis
-                                 ? this
-                                 : oThis,
-                               aArgs.concat(Array.prototype.slice.call(arguments)));
+          return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
         };
 
     fNOP.prototype = this.prototype;
@@ -21,7 +18,7 @@ if (!Function.prototype.bind) {
     return fBound;
   };
 }
-(function() {
+(function () {
 
   'use strict';
 
@@ -30,7 +27,7 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -43,23 +40,23 @@ if (!Function.prototype.bind) {
     /**
      * @returns An array of node ids as string. ['idOfFirstNode', 'idOfSecondNode', ...]. Tbis is not exactly the best way to return ids, but until now there is no need for a better return.
      */
-    return function(graph) {
+    return function (graph) {
 
       // Build adjacent list with incoming and outgoing edges.
       var adjacentList = {};
-      angular.forEach(graph.nodes, function(node) {
-        adjacentList[node.id] = {incoming: 0, outgoing: []};
+      angular.forEach(graph.nodes, function (node) {
+        adjacentList[node.id] = { incoming: 0, outgoing: [] };
       });
-      angular.forEach(graph.edges, function(edge) {
-        var sourceNode = graph.nodes.filter(function(node) {
-          return node.connectors.some(function(connector) {
+      angular.forEach(graph.edges, function (edge) {
+        var sourceNode = graph.nodes.filter(function (node) {
+          return node.connectors.some(function (connector) {
             return connector.id === edge.source;
-          })
+          });
         })[0];
-        var destinationNode = graph.nodes.filter(function(node) {
-          return node.connectors.some(function(connector) {
+        var destinationNode = graph.nodes.filter(function (node) {
+          return node.connectors.some(function (connector) {
             return connector.id === edge.destination;
-          })
+          });
         })[0];
 
         adjacentList[sourceNode.id].outgoing.push(destinationNode.id);
@@ -68,7 +65,7 @@ if (!Function.prototype.bind) {
 
       var orderedNodes = [];
       var sourceNodes = [];
-      angular.forEach(adjacentList, function(edges, node) {
+      angular.forEach(adjacentList, function (edges, node) {
         if (edges.incoming === 0) {
           sourceNodes.push(node);
         }
@@ -88,7 +85,7 @@ if (!Function.prototype.bind) {
       }
 
       var hasEdges = false;
-      angular.forEach(adjacentList, function(edges) {
+      angular.forEach(adjacentList, function (edges) {
         if (edges.incoming !== 0) {
           hasEdges = true;
         }
@@ -99,14 +96,14 @@ if (!Function.prototype.bind) {
         return orderedNodes;
       }
 
-    }
+    };
   }
 
   angular.module('flowchart')
     .factory('Topsortservice', Topsortservice);
 })();
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -115,7 +112,7 @@ if (!Function.prototype.bind) {
     .provider('NodeTemplatePath', NodeTemplatePath);
 
   function NodeTemplatePath() {
-    var templatePath = "flowchart/node.html";
+    var templatePath = 'flowchart/node.html';
 
     this.setTemplatePath = setTemplatePath;
     this.$get = NodeTemplatePath;
@@ -131,12 +128,12 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function Nodedraggingfactory(flowchartConstants) {
-    return function(modelservice, nodeDraggingScope, applyFunction, automaticResize, dragAnimation) {
+    return function (modelservice, nodeDraggingScope, applyFunction, automaticResize, dragAnimation) {
 
       var dragOffset = {};
       var draggedElement = null;
@@ -144,19 +141,22 @@ if (!Function.prototype.bind) {
       nodeDraggingScope.shadowDragStarted = false;
 
       var destinationHtmlElement = null;
-      var oldDisplayStyle = "";
+      var oldDisplayStyle = '';
 
       function getCoordinate(coordinate, max) {
         coordinate = Math.max(coordinate, 0);
         coordinate = Math.min(coordinate, max);
         return coordinate;
       }
+
       function getXCoordinate(x) {
         return getCoordinate(x, modelservice.getCanvasHtmlElement().offsetWidth);
       }
+
       function getYCoordinate(y) {
         return getCoordinate(y, modelservice.getCanvasHtmlElement().offsetHeight);
       }
+
       function resizeCanvas(draggedNode, nodeElement) {
         if (automaticResize) {
           var canvasElement = modelservice.getCanvasHtmlElement();
@@ -168,9 +168,10 @@ if (!Function.prototype.bind) {
           }
         }
       }
+
       return {
-        dragstart: function(node) {
-          return function(event) {
+        dragstart: function (node) {
+          return function (event) {
             modelservice.deselectAll();
             modelservice.nodes.select(node);
             nodeDraggingScope.draggedNode = node;
@@ -181,7 +182,7 @@ if (!Function.prototype.bind) {
             dragOffset.y = parseInt(element.css('top')) - event.clientY;
 
             if (dragAnimation == flowchartConstants.dragAnimationShadow) {
-              var shadowElement = angular.element('<div style="position: absolute; opacity: 0.7; top: '+ getYCoordinate(dragOffset.y + event.clientY) +'px; left: '+ getXCoordinate(dragOffset.x + event.clientX) +'px; "><div class="innerNode"><p style="padding: 0 15px;">'+ nodeDraggingScope.draggedNode.name +'</p> </div></div>');
+              var shadowElement = angular.element('<div style="position: absolute; opacity: 0.7; top: ' + getYCoordinate(dragOffset.y + event.clientY) + 'px; left: ' + getXCoordinate(dragOffset.x + event.clientX) + 'px; "><div class="innerNode"><p style="padding: 0 15px;">' + nodeDraggingScope.draggedNode.name + '</p> </div></div>');
               var targetInnerNode = angular.element(event.target).children()[0];
               shadowElement.children()[0].style.backgroundColor = targetInnerNode.style.backgroundColor;
               nodeDraggingScope.shadowElement = shadowElement;
@@ -189,10 +190,10 @@ if (!Function.prototype.bind) {
               canvasElement.appendChild(nodeDraggingScope.shadowElement[0]);
             }
 
-            event.dataTransfer.setData('Text', 'Just to support firefox');
-            if (event.dataTransfer.setDragImage) {
+            event.originalEvent.dataTransfer.setData('Text', 'Just to support firefox');
+            if (event.originalEvent.dataTransfer.setDragImage) {
               var invisibleDiv = angular.element('<div></div>')[0]; // This divs stays invisible, because it is not in the dom.
-              event.dataTransfer.setDragImage(invisibleDiv, 0, 0);
+              event.originalEvent.dataTransfer.setDragImage(invisibleDiv, 0, 0);
             } else {
               destinationHtmlElement = event.target;
               oldDisplayStyle = destinationHtmlElement.style.display;
@@ -206,21 +207,21 @@ if (!Function.prototype.bind) {
           };
         },
 
-        drop: function(event) {
+        drop: function (event) {
           if (nodeDraggingScope.draggedNode) {
-            return applyFunction(function() {
+            return applyFunction(function () {
               nodeDraggingScope.draggedNode.x = getXCoordinate(dragOffset.x + event.clientX);
               nodeDraggingScope.draggedNode.y = getYCoordinate(dragOffset.y + event.clientY);
               event.preventDefault();
               return false;
-            })
+            });
           }
         },
 
-        dragover: function(event) {
+        dragover: function (event) {
           if (dragAnimation == flowchartConstants.dragAnimationRepaint) {
             if (nodeDraggingScope.draggedNode) {
-              return applyFunction(function() {
+              return applyFunction(function () {
                 nodeDraggingScope.draggedNode.x = getXCoordinate(dragOffset.x + event.clientX);
                 nodeDraggingScope.draggedNode.y = getYCoordinate(dragOffset.y + event.clientY);
                 resizeCanvas(nodeDraggingScope.draggedNode, draggedElement);
@@ -230,8 +231,8 @@ if (!Function.prototype.bind) {
             }
           } else if (dragAnimation == flowchartConstants.dragAnimationShadow) {
             if (nodeDraggingScope.draggedNode) {
-              if(nodeDraggingScope.shadowDragStarted) {
-                applyFunction(function() {
+              if (nodeDraggingScope.shadowDragStarted) {
+                applyFunction(function () {
                   destinationHtmlElement.style.display = oldDisplayStyle;
                   nodeDraggingScope.shadowDragStarted = false;
                 });
@@ -244,11 +245,11 @@ if (!Function.prototype.bind) {
           }
         },
 
-        dragend: function(event) {
-          applyFunction(function() {
+        dragend: function (event) {
+          applyFunction(function () {
             if (nodeDraggingScope.shadowElement) {
-              nodeDraggingScope.draggedNode.x = parseInt(nodeDraggingScope.shadowElement.css('left').replace('px',''));
-              nodeDraggingScope.draggedNode.y = parseInt(nodeDraggingScope.shadowElement.css('top').replace('px',''));
+              nodeDraggingScope.draggedNode.x = parseInt(nodeDraggingScope.shadowElement.css('left').replace('px', ''));
+              nodeDraggingScope.draggedNode.y = parseInt(nodeDraggingScope.shadowElement.css('top').replace('px', ''));
 
               modelservice.getCanvasHtmlElement().removeChild(nodeDraggingScope.shadowElement[0]);
               nodeDraggingScope.shadowElement = null;
@@ -265,7 +266,8 @@ if (!Function.prototype.bind) {
       };
     };
   }
-  Nodedraggingfactory.$inject = ["flowchartConstants"];
+
+  Nodedraggingfactory.$inject = ['flowchartConstants'];
 
   angular
     .module('flowchart')
@@ -273,14 +275,14 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function fcNode(flowchartConstants, NodeTemplatePath) {
     return {
       restrict: 'E',
-      templateUrl: function() {
+      templateUrl: function () {
         return NodeTemplatePath;
       },
       replace: true,
@@ -294,7 +296,7 @@ if (!Function.prototype.bind) {
         modelservice: '=',
         draggedNode: '='
       },
-      link: function(scope, element) {
+      link: function (scope, element) {
         scope.flowchartConstants = flowchartConstants;
         element.attr('draggable', 'true');
 
@@ -314,72 +316,73 @@ if (!Function.prototype.bind) {
           }
         }
 
-        scope.$watch('selected', function(value) {
+        scope.$watch('selected', function (value) {
           myToggleClass(flowchartConstants.selectedClass, value);
         });
-        scope.$watch('underMouse', function(value) {
+        scope.$watch('underMouse', function (value) {
           myToggleClass(flowchartConstants.hoverClass, value);
         });
-        scope.$watch('draggedNode', function(value) {
-          myToggleClass(flowchartConstants.draggingClass, value===scope.node);
+        scope.$watch('draggedNode', function (value) {
+          myToggleClass(flowchartConstants.draggingClass, value === scope.node);
         });
       }
     };
   }
-  fcNode.$inject = ["flowchartConstants", "NodeTemplatePath"];
+
+  fcNode.$inject = ['flowchartConstants', 'NodeTemplatePath'];
 
   angular.module('flowchart').directive('fcNode', fcNode);
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function Mouseoverfactory() {
-    return function(mouseoverscope, applyFunction) {
+    return function (mouseoverscope, applyFunction) {
       var mouseoverservice = {};
 
       mouseoverscope.connector = null;
       mouseoverscope.edge = null;
       mouseoverscope.node = null;
 
-      mouseoverservice.nodeMouseOver = function(node) {
-        return function(event) {
-          return applyFunction(function() {
+      mouseoverservice.nodeMouseOver = function (node) {
+        return function (event) {
+          return applyFunction(function () {
             mouseoverscope.node = node;
           });
         };
       };
 
-      mouseoverservice.nodeMouseOut = function(node) {
-        return function(event) {
-          return applyFunction(function() {
+      mouseoverservice.nodeMouseOut = function (node) {
+        return function (event) {
+          return applyFunction(function () {
             mouseoverscope.node = null;
           });
         };
       };
 
-      mouseoverservice.connectorMouseEnter = function(connector) {
-        return function(event) {
-          return applyFunction(function() {
+      mouseoverservice.connectorMouseEnter = function (connector) {
+        return function (event) {
+          return applyFunction(function () {
             mouseoverscope.connector = connector;
           });
         };
       };
 
-      mouseoverservice.connectorMouseLeave = function(connector) {
-        return function(event) {
-          return applyFunction(function() {
-            mouseoverscope.connector = null
+      mouseoverservice.connectorMouseLeave = function (connector) {
+        return function (event) {
+          return applyFunction(function () {
+            mouseoverscope.connector = null;
           });
         };
       };
 
-      mouseoverservice.edgeMouseEnter = function(event, edge) {
+      mouseoverservice.edgeMouseEnter = function (event, edge) {
         mouseoverscope.edge = edge;
       };
 
-      mouseoverservice.edgeMouseLeave = function(event, egde) {
+      mouseoverservice.edgeMouseLeave = function (event, egde) {
         mouseoverscope.edge = null;
       };
 
@@ -392,7 +395,7 @@ if (!Function.prototype.bind) {
 }());
 
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -401,22 +404,23 @@ if (!Function.prototype.bind) {
     function ModelvalidationError(message) {
       this.message = message;
     }
+
     ModelvalidationError.prototype = new Error;
     ModelvalidationError.prototype.name = 'ModelvalidationError';
     ModelvalidationError.prototype.constructor = ModelvalidationError;
     this.ModelvalidationError = ModelvalidationError;
 
-    this.validateModel = function(model) {
+    this.validateModel = function (model) {
       this.validateNodes(model.nodes);
       this._validateEdges(model.edges, model.nodes);
       return model;
     };
 
-    this.validateNodes = function(nodes) {
+    this.validateNodes = function (nodes) {
       var that = this;
 
       var ids = [];
-      angular.forEach(nodes, function(node) {
+      angular.forEach(nodes, function (node) {
         that.validateNode(node);
         if (ids.indexOf(node.id) !== -1) {
           throw new ModelvalidationError('Id not unique.');
@@ -425,8 +429,8 @@ if (!Function.prototype.bind) {
       });
 
       var connectorIds = [];
-      angular.forEach(nodes, function(node) {
-        angular.forEach(node.connectors, function(connector) {
+      angular.forEach(nodes, function (node) {
+        angular.forEach(node.connectors, function (connector) {
           if (connectorIds.indexOf(connector.id) !== -1) {
             throw new ModelvalidationError('Id not unique.');
           }
@@ -436,7 +440,7 @@ if (!Function.prototype.bind) {
       return nodes;
     };
 
-    this.validateNode = function(node) {
+    this.validateNode = function (node) {
       var that = this;
       if (node.id === undefined) {
         throw new ModelvalidationError('Id not valid.');
@@ -445,49 +449,49 @@ if (!Function.prototype.bind) {
         throw new ModelvalidationError('Name not valid.');
       }
       if (typeof node.x !== 'number' || node.x < 0 || Math.round(node.x) !== node.x) {
-        throw new ModelvalidationError('Coordinates not valid.')
+        throw new ModelvalidationError('Coordinates not valid.');
       }
       if (typeof node.y !== 'number' || node.y < 0 || Math.round(node.y) !== node.y) {
-        throw new ModelvalidationError('Coordinates not valid.')
+        throw new ModelvalidationError('Coordinates not valid.');
       }
       if (!Array.isArray(node.connectors)) {
         throw new ModelvalidationError('Connectors not valid.');
       }
-      angular.forEach(node.connectors, function(connector) {
+      angular.forEach(node.connectors, function (connector) {
         that.validateConnector(connector);
       });
       return node;
     };
 
-    this._validateEdges = function(edges, nodes) {
+    this._validateEdges = function (edges, nodes) {
       var that = this;
 
-      angular.forEach(edges, function(edge) {
+      angular.forEach(edges, function (edge) {
         that._validateEdge(edge, nodes);
       });
-      angular.forEach(edges, function(edge1, index1) {
-        angular.forEach(edges, function(edge2, index2) {
+      angular.forEach(edges, function (edge1, index1) {
+        angular.forEach(edges, function (edge2, index2) {
           if (index1 !== index2) {
             if ((edge1.source === edge2.source && edge1.destination === edge2.destination) || (edge1.source === edge2.destination && edge1.destination === edge2.source)) {
-              throw new ModelvalidationError('Duplicated edge.')
+              throw new ModelvalidationError('Duplicated edge.');
             }
           }
         });
       });
 
-      if (Topsortservice({nodes: nodes, edges: edges}) === null) {
+      if (Topsortservice({ nodes: nodes, edges: edges }) === null) {
         throw new ModelvalidationError('Graph has a circle.');
       }
 
       return edges;
     };
 
-    this.validateEdges = function(edges, nodes) {
+    this.validateEdges = function (edges, nodes) {
       this.validateNodes(nodes);
       return this._validateEdges(edges, nodes);
     };
 
-    this._validateEdge = function(edge, nodes) {
+    this._validateEdge = function (edge, nodes) {
       if (edge.source === undefined) {
         throw new ModelvalidationError('Source not valid.');
       }
@@ -498,11 +502,19 @@ if (!Function.prototype.bind) {
       if (edge.source === edge.destination) {
         throw new ModelvalidationError('Edge with same source and destination connectors.');
       }
-      var sourceNode = nodes.filter(function(node) {return node.connectors.some(function(connector) {return connector.id === edge.source})})[0];
+      var sourceNode = nodes.filter(function (node) {
+        return node.connectors.some(function (connector) {
+          return connector.id === edge.source;
+        });
+      })[0];
       if (sourceNode === undefined) {
         throw new ModelvalidationError('Source not valid.');
       }
-      var destinationNode = nodes.filter(function(node) {return node.connectors.some(function(connector) {return connector.id === edge.destination})})[0];
+      var destinationNode = nodes.filter(function (node) {
+        return node.connectors.some(function (connector) {
+          return connector.id === edge.destination;
+        });
+      })[0];
       if (destinationNode === undefined) {
         throw new ModelvalidationError('Destination not valid.');
       }
@@ -512,12 +524,12 @@ if (!Function.prototype.bind) {
       return edge;
     };
 
-    this.validateEdge = function(edge, nodes) {
+    this.validateEdge = function (edge, nodes) {
       this.validateNodes(nodes);
       return this._validateEdge(edge, nodes);
     };
 
-    this.validateConnector = function(connector) {
+    this.validateConnector = function (connector) {
       if (connector.id === undefined) {
         throw new ModelvalidationError('Id not valid.');
       }
@@ -528,14 +540,15 @@ if (!Function.prototype.bind) {
     };
 
   }
-  Modelvalidation.$inject = ["Topsortservice", "flowchartConstants"];
+
+  Modelvalidation.$inject = ['Topsortservice', 'flowchartConstants'];
 
   angular.module('flowchart')
     .service('Modelvalidation', Modelvalidation);
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -582,29 +595,29 @@ if (!Function.prototype.bind) {
 
       modelservice.connectors = {
 
-        getConnector: function(connectorId) {
-          for(var i=0; i<model.nodes.length; i++) {
-            for(var j=0; j<model.nodes[i].connectors.length; j++) {
-              if(model.nodes[i].connectors[j].id == connectorId) {
+        getConnector: function (connectorId) {
+          for (var i = 0; i < model.nodes.length; i++) {
+            for (var j = 0; j < model.nodes[i].connectors.length; j++) {
+              if (model.nodes[i].connectors[j].id === connectorId) {
                 return model.nodes[i].connectors[j];
               }
             }
           }
         },
 
-        setHtmlElement: function(connectorId, element) {
+        setHtmlElement: function (connectorId, element) {
           connectorsHtmlElements[connectorId] = element;
         },
 
-        getHtmlElement: function(connectorId) {
+        getHtmlElement: function (connectorId) {
           return connectorsHtmlElements[connectorId];
         },
 
-        _getCoords: function(connectorId, centered) {
+        _getCoords: function (connectorId, centered) {
           var element = this.getHtmlElement(connectorId);
           var canvas = modelservice.getCanvasHtmlElement();
           if (element === null || element === undefined || canvas === null) {
-            return {x: 0, y: 0};
+            return { x: 0, y: 0 };
           }
           var connectorElementBox = element.getBoundingClientRect();
           var canvasElementBox = canvas.getBoundingClientRect();
@@ -623,20 +636,20 @@ if (!Function.prototype.bind) {
           return coords;
         },
 
-        getCoord: function(connectorId) {
+        getCoord: function (connectorId) {
           return this._getCoords(connectorId, false);
         },
 
-        getCenteredCoord: function(connectorId) {
+        getCenteredCoord: function (connectorId) {
           return this._getCoords(connectorId, true);
         }
 
       };
 
       modelservice.nodes = {
-        getConnectorsByType: function(node, type) {
-          return node.connectors.filter(function(connector) {
-            return connector.type === type
+        getConnectorsByType: function (node, type) {
+          return node.connectors.filter(function (connector) {
+            return connector.type === type;
           });
         },
 
@@ -645,7 +658,7 @@ if (!Function.prototype.bind) {
         toggleSelected: toggleSelectedObject,
         isSelected: isSelectedObject,
 
-        _addConnector: function(node, connector) {
+        _addConnector: function (node, connector) {
           node.connectors.push(connector);
           try {
             Modelvalidation.validateNode(node);
@@ -655,7 +668,7 @@ if (!Function.prototype.bind) {
           }
         },
 
-        delete: function(node) {
+        delete: function (node) {
 
           if (this.isSelected(node)) {
             this.deselect(node);
@@ -665,7 +678,7 @@ if (!Function.prototype.bind) {
             if (node === undefined) {
               throw new Error('Passed undefined');
             }
-            throw new Error('Tried to delete not existing node')
+            throw new Error('Tried to delete not existing node');
           }
 
           var connectorIds = this.getConnectorIds(node);
@@ -680,13 +693,13 @@ if (!Function.prototype.bind) {
           modelservice.nodeRemovedCallback(node);
         },
 
-        getSelectedNodes: function() {
-          return model.nodes.filter(function(node) {
-            return modelservice.nodes.isSelected(node)
+        getSelectedNodes: function () {
+          return model.nodes.filter(function (node) {
+            return modelservice.nodes.isSelected(node);
           });
         },
 
-        handleClicked: function(node, ctrlKey) {
+        handleClicked: function (node, ctrlKey) {
           if (ctrlKey) {
             modelservice.nodes.toggleSelected(node);
           } else {
@@ -695,30 +708,30 @@ if (!Function.prototype.bind) {
           }
         },
 
-        _addNode: function(node) {
+        _addNode: function (node) {
           try {
             model.nodes.push(node);
             Modelvalidation.validateNodes(model.nodes);
-          } catch(error) {
+          } catch (error) {
             model.nodes.splice(model.nodes.indexOf(node), 1);
             throw error;
           }
         },
 
-        getConnectorIds: function(node) {
-          return node.connectors.map(function(connector) {
-            return connector.id
+        getConnectorIds: function (node) {
+          return node.connectors.map(function (connector) {
+            return connector.id;
           });
         }
       };
 
       modelservice.edges = {
 
-        sourceCoord: function(edge) {
+        sourceCoord: function (edge) {
           return modelservice.connectors.getCenteredCoord(edge.source, edge.source);
         },
 
-        destCoord: function(edge) {
+        destCoord: function (edge) {
           return modelservice.connectors.getCenteredCoord(edge.destination);
         },
 
@@ -731,22 +744,22 @@ if (!Function.prototype.bind) {
           (edge) {
           var index = model.edges.indexOf(edge);
           if (index === -1) {
-            throw new Error('Tried to delete not existing edge')
+            throw new Error('Tried to delete not existing edge');
           }
           if (this.isSelected(edge)) {
-            this.deselect(edge)
+            this.deselect(edge);
           }
           model.edges.splice(index, 1);
           modelservice.edgeRemovedCallback(edge);
         },
 
-        getSelectedEdges: function() {
-          return model.edges.filter(function(edge) {
-            return modelservice.edges.isSelected(edge)
+        getSelectedEdges: function () {
+          return model.edges.filter(function (edge) {
+            return modelservice.edges.isSelected(edge);
           });
         },
 
-        handleEdgeMouseClick: function(edge, ctrlKey) {
+        handleEdgeMouseClick: function (edge, ctrlKey) {
           if (ctrlKey) {
             modelservice.edges.toggleSelected(edge);
           } else {
@@ -755,53 +768,53 @@ if (!Function.prototype.bind) {
           }
         },
 
-        _addEdge: function(sourceConnector, destConnector) {
+        _addEdge: function (sourceConnector, destConnector) {
           Modelvalidation.validateConnector(sourceConnector);
           Modelvalidation.validateConnector(destConnector);
-          var edge = {source: sourceConnector.id, destination: destConnector.id};
+          var edge = { source: sourceConnector.id, destination: destConnector.id };
           Modelvalidation.validateEdges(model.edges.concat([edge]), model.nodes);
           model.edges.push(edge);
           modelservice.edgeAddedCallback(edge);
         }
       };
 
-      modelservice.selectAll = function() {
-        angular.forEach(model.nodes, function(value) {
+      modelservice.selectAll = function () {
+        angular.forEach(model.nodes, function (value) {
           modelservice.nodes.select(value);
         });
-        angular.forEach(model.edges, function(value) {
+        angular.forEach(model.edges, function (value) {
           modelservice.edges.select(value);
         });
       };
 
-      modelservice.deselectAll = function() {
+      modelservice.deselectAll = function () {
         modelservice.selectedObjects.splice(0, modelservice.selectedObjects.length);
       };
 
-      modelservice.deleteSelected = function() {
+      modelservice.deleteSelected = function () {
         var edgesToDelete = modelservice.edges.getSelectedEdges();
-        angular.forEach(edgesToDelete, function(edge) {
+        angular.forEach(edgesToDelete, function (edge) {
           modelservice.edges.delete(edge);
         });
         var nodesToDelete = modelservice.nodes.getSelectedNodes();
-        angular.forEach(nodesToDelete, function(node) {
+        angular.forEach(nodesToDelete, function (node) {
           modelservice.nodes.delete(node);
         });
       };
 
-      modelservice.setCanvasHtmlElement = function(element) {
+      modelservice.setCanvasHtmlElement = function (element) {
         canvasHtmlElement = element;
       };
 
-      modelservice.getCanvasHtmlElement = function() {
+      modelservice.getCanvasHtmlElement = function () {
         return canvasHtmlElement;
       };
 
-      modelservice.setSvgHtmlElement = function(element) {
+      modelservice.setSvgHtmlElement = function (element) {
         svgHtmlElement = element;
       };
 
-      modelservice.getSvgHtmlElement = function() {
+      modelservice.getSvgHtmlElement = function () {
         return svgHtmlElement;
       };
 
@@ -812,24 +825,25 @@ if (!Function.prototype.bind) {
       };
 
       return modelservice;
-    }
+    };
 
   }
-  Modelfactory.$inject = ["Modelvalidation"];
+
+  Modelfactory.$inject = ['Modelvalidation'];
 
   angular.module('flowchart')
     .service('Modelfactory', Modelfactory);
 
 })();
 
-(function() {
+(function () {
 
   'use strict';
 
   function fcMagnet(flowchartConstants) {
     return {
       restrict: 'AE',
-      link: function(scope, element) {
+      link: function (scope, element) {
         element.addClass(flowchartConstants.magnetClass);
 
         element.on('dragover', scope.fcCallbacks.edgeDragoverMagnet(scope.connector));
@@ -837,15 +851,16 @@ if (!Function.prototype.bind) {
         element.on('drop', scope.fcCallbacks.edgeDrop(scope.connector));
         element.on('dragend', scope.fcCallbacks.edgeDragend);
       }
-    }
+    };
   }
-  fcMagnet.$inject = ["flowchartConstants"];
+
+  fcMagnet.$inject = ['flowchartConstants'];
 
   angular.module('flowchart')
     .directive('fcMagnet', fcMagnet);
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -878,13 +893,13 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function Edgedrawingservice(flowchartConstants) {
     function computeEdgeTangentOffset(pt1, pt2) {
-        return (pt2.y - pt1.y) / 2;
+      return (pt2.y - pt1.y) / 2;
     }
 
     function computeEdgeSourceTangent(pt1, pt2) {
@@ -901,7 +916,7 @@ if (!Function.prototype.bind) {
       };
     }
 
-    this.getEdgeDAttribute = function(pt1, pt2, style) {
+    this.getEdgeDAttribute = function (pt1, pt2, style) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
       if (style === flowchartConstants.curvedStyle) {
         var sourceTangent = computeEdgeSourceTangent(pt1, pt2);
@@ -913,7 +928,8 @@ if (!Function.prototype.bind) {
       return dAddribute;
     };
   }
-  Edgedrawingservice.$inject = ["flowchartConstants"];
+
+  Edgedrawingservice.$inject = ['flowchartConstants'];
 
   angular
     .module('flowchart')
@@ -921,14 +937,14 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function Edgedraggingfactory(Modelvalidation, flowchartConstants, Edgedrawingservice) {
     function factory(modelservice, model, edgeDragging, isValidEdgeCallback, applyFunction, dragAnimation, edgeStyle) {
       if (isValidEdgeCallback === null) {
-        isValidEdgeCallback = function() {
+        isValidEdgeCallback = function () {
           return true;
         };
       }
@@ -944,16 +960,16 @@ if (!Function.prototype.bind) {
       edgeDragging.shadowDragStarted = false;
 
       var destinationHtmlElement = null;
-      var oldDisplayStyle = "";
+      var oldDisplayStyle = '';
 
-      edgedraggingService.dragstart = function(connector) {
-        return function(event) {
+      edgedraggingService.dragstart = function (connector) {
+        return function (event) {
 
-          if (connector.type == flowchartConstants.topConnectorType) {
+          if (connector.type === flowchartConstants.topConnectorType) {
             for (var i = 0; i < model.edges.length; i++) {
-              if (model.edges[i].destination == connector.id) {
+              if (model.edges[i].destination === connector.id) {
                 var swapConnector = modelservice.connectors.getConnector(model.edges[i].source);
-                applyFunction(function() {
+                applyFunction(function () {
                   modelservice.edges.delete(model.edges[i]);
                 });
                 break;
@@ -963,7 +979,7 @@ if (!Function.prototype.bind) {
 
           edgeDragging.isDragging = true;
 
-          if (swapConnector != undefined) {
+          if (swapConnector !== undefined) {
             draggedEdgeSource = swapConnector;
             edgeDragging.dragPoint1 = modelservice.connectors.getCenteredCoord(swapConnector.id);
           } else {
@@ -983,24 +999,25 @@ if (!Function.prototype.bind) {
             y: event.clientY + dragOffset.y
           };
 
-          event.dataTransfer.setData('Text', 'Just to support firefox');
-          if (event.dataTransfer.setDragImage) {
+          event.originalEvent.dataTransfer.effectAllowed = 'move';
+          event.originalEvent.dataTransfer.setData('Text', 'Just to support firefox');
+          if (event.originalEvent.dataTransfer.setDragImage) {
             var invisibleDiv = angular.element('<div></div>')[0]; // This divs stays invisible, because it is not in the dom.
-            event.dataTransfer.setDragImage(invisibleDiv, 0, 0);
+            event.originalEvent.dataTransfer.setDragImage(invisibleDiv, 0, 0);
           } else {
             destinationHtmlElement = event.target;
             oldDisplayStyle = destinationHtmlElement.style.display;
             event.target.style.display = 'none'; // Internetexplorer does not support setDragImage, but it takes an screenshot, from the draggedelement and uses it as dragimage.
             // Since angular redraws the element in the next dragover call, display: none never gets visible to the user.
 
-            if (dragAnimation == flowchartConstants.dragAnimationShadow) {
+            if (dragAnimation === flowchartConstants.dragAnimationShadow) {
               // IE Drag Fix
               edgeDragging.shadowDragStarted = true;
             }
           }
 
-          if (dragAnimation == flowchartConstants.dragAnimationShadow) {
-            if (edgeDragging.gElement == undefined) {
+          if (dragAnimation === flowchartConstants.dragAnimationShadow) {
+            if (edgeDragging.gElement === undefined) {
               //set shadow elements once
               // IE Support
               edgeDragging.gElement = angular.element(document.querySelectorAll('.shadow-svg-class'));
@@ -1017,7 +1034,7 @@ if (!Function.prototype.bind) {
         };
       };
 
-      edgedraggingService.dragover = function(event) {
+      edgedraggingService.dragover = function (event) {
 
         if (edgeDragging.isDragging) {
           if (!edgeDragging.magnetActive && dragAnimation == flowchartConstants.dragAnimationShadow) {
@@ -1026,7 +1043,7 @@ if (!Function.prototype.bind) {
             }
 
             if (edgeDragging.shadowDragStarted) {
-              applyFunction(function() {
+              applyFunction(function () {
                 edgeDragging.shadowDragStarted = false;
               });
             }
@@ -1056,8 +1073,8 @@ if (!Function.prototype.bind) {
         }
       };
 
-      edgedraggingService.dragoverConnector = function(connector) {
-        return function(event) {
+      edgedraggingService.dragoverConnector = function (connector) {
+        return function (event) {
 
           if (edgeDragging.isDragging) {
             edgedraggingService.dragover(event);
@@ -1083,14 +1100,14 @@ if (!Function.prototype.bind) {
       };
 
       edgedraggingService.dragleaveMagnet = function (event) {
-          edgeDragging.magnetActive = false;
+        edgeDragging.magnetActive = false;
       };
 
-      edgedraggingService.dragoverMagnet = function(connector) {
-        return function(event) {
+      edgedraggingService.dragoverMagnet = function (connector) {
+        return function (event) {
           if (edgeDragging.isDragging) {
             edgedraggingService.dragover(event);
-              try {
+            try {
               Modelvalidation.validateEdges(model.edges.concat([{
                 source: draggedEdgeSource.id,
                 destination: connector.id
@@ -1117,7 +1134,7 @@ if (!Function.prototype.bind) {
                 return false;
 
               } else if (dragAnimation == flowchartConstants.dragAnimationRepaint) {
-                return applyFunction(function() {
+                return applyFunction(function () {
                   edgeDragging.dragPoint2 = modelservice.connectors.getCenteredCoord(connector.id);
                   event.preventDefault();
                   event.stopPropagation();
@@ -1127,10 +1144,10 @@ if (!Function.prototype.bind) {
             }
           }
 
-        }
+        };
       };
 
-      edgedraggingService.dragend = function(event) {
+      edgedraggingService.dragend = function (event) {
         if (edgeDragging.isDragging) {
           edgeDragging.isDragging = false;
           edgeDragging.dragPoint1 = null;
@@ -1143,8 +1160,8 @@ if (!Function.prototype.bind) {
         }
       };
 
-      edgedraggingService.drop = function(targetConnector) {
-        return function(event) {
+      edgedraggingService.drop = function (targetConnector) {
+        return function (event) {
           if (edgeDragging.isDragging) {
             try {
               Modelvalidation.validateEdges(model.edges.concat([{
@@ -1166,28 +1183,29 @@ if (!Function.prototype.bind) {
               return false;
             }
           }
-        }
+        };
       };
       return edgedraggingService;
     }
 
     return factory;
   }
-  Edgedraggingfactory.$inject = ["Modelvalidation", "flowchartConstants", "Edgedrawingservice"];
+
+  Edgedraggingfactory.$inject = ['Modelvalidation', 'flowchartConstants', 'Edgedrawingservice'];
 
   angular.module('flowchart')
     .factory('Edgedraggingfactory', Edgedraggingfactory);
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function fcConnector(flowchartConstants) {
     return {
       restrict: 'A',
-      link: function(scope, element) {
+      link: function (scope, element) {
         element.attr('draggable', 'true');
 
         element.on('dragover', scope.fcCallbacks.edgeDragoverConnector);
@@ -1198,7 +1216,7 @@ if (!Function.prototype.bind) {
         element.on('mouseleave', scope.fcCallbacks.connectorMouseLeave(scope.connector));
 
         element.addClass(flowchartConstants.connectorClass);
-        scope.$watch('mouseOverConnector', function(value) {
+        scope.$watch('mouseOverConnector', function (value) {
           if (value === scope.connector) {
             element.addClass(flowchartConstants.hoverClass);
           } else {
@@ -1210,7 +1228,8 @@ if (!Function.prototype.bind) {
       }
     };
   }
-  fcConnector.$inject = ["flowchartConstants"];
+
+  fcConnector.$inject = ['flowchartConstants'];
 
   angular
     .module('flowchart')
@@ -1218,7 +1237,7 @@ if (!Function.prototype.bind) {
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -1226,51 +1245,52 @@ if (!Function.prototype.bind) {
 
     var canvasHtmlElement;
 
-    this.setCanvasHtmlElement = function(element) {
+    this.setCanvasHtmlElement = function (element) {
       canvasHtmlElement = element;
     };
 
-    this.getCanvasHtmlElement = function() {
+    this.getCanvasHtmlElement = function () {
       return canvasHtmlElement;
     };
 
-    this.dragover = function(scope, callback) {
-        var handler = $rootScope.$on('notifying-dragover-event', callback);
-        scope.$on('$destroy', handler);
+    this.dragover = function (scope, callback) {
+      var handler = $rootScope.$on('notifying-dragover-event', callback);
+      scope.$on('$destroy', handler);
     };
-    
-    this._notifyDragover = function(event) {
+
+    this._notifyDragover = function (event) {
       $rootScope.$emit('notifying-dragover-event', event);
     };
 
-    this.drop = function(scope, callback) {
+    this.drop = function (scope, callback) {
       var handler = $rootScope.$on('notifying-drop-event', callback);
       scope.$on('$destroy', handler);
     };
 
-    this._notifyDrop = function(event) {
+    this._notifyDrop = function (event) {
       $rootScope.$emit('notifying-drop-event', event);
     };
   }
-  CanvasService.$inject = ["$rootScope"];
+
+  CanvasService.$inject = ['$rootScope'];
 
   angular.module('flowchart')
-      .service('FlowchartCanvasService', CanvasService);
+    .service('FlowchartCanvasService', CanvasService);
 
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
   function fcCanvas(flowchartConstants, FlowchartCanvasService) {
     return {
       restrict: 'E',
-      templateUrl: "flowchart/canvas.html",
+      templateUrl: 'flowchart/canvas.html',
       replace: true,
       scope: {
-        model: "=",
-        selectedObjects: "=",
+        model: '=',
+        selectedObjects: '=',
         edgeStyle: '@',
         userCallbacks: '=?callbacks',
         automaticResize: '=?',
@@ -1279,7 +1299,7 @@ if (!Function.prototype.bind) {
         nodeHeight: '=?'
       },
       controller: 'canvasController',
-      link: function(scope, element) {
+      link: function (scope, element) {
         function adjustCanvasSize() {
           if (scope.model) {
             var maxX = 0;
@@ -1292,6 +1312,7 @@ if (!Function.prototype.bind) {
             element.css('height', Math.max(maxY, element.prop('offsetHeight')) + 'px');
           }
         }
+
         if (scope.edgeStyle !== flowchartConstants.curvedStyle && scope.edgeStyle !== flowchartConstants.lineStyle) {
           throw new Error('edgeStyle not supported.');
         }
@@ -1312,7 +1333,8 @@ if (!Function.prototype.bind) {
       }
     };
   }
-  fcCanvas.$inject = ["flowchartConstants", "FlowchartCanvasService"];
+
+  fcCanvas.$inject = ['flowchartConstants', 'FlowchartCanvasService'];
 
   angular
     .module('flowchart')
@@ -1321,7 +1343,7 @@ if (!Function.prototype.bind) {
 }());
 
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -1331,13 +1353,13 @@ if (!Function.prototype.bind) {
 
     $scope.userCallbacks = $scope.userCallbacks || {};
     $scope.automaticResize = $scope.automaticResize || false;
-    angular.forEach($scope.userCallbacks, function(callback, key) {
+    angular.forEach($scope.userCallbacks, function (callback, key) {
       if (!angular.isFunction(callback) && key !== 'nodeCallbacks') {
         throw new Error('All callbacks should be functions.');
       }
     });
 
-    $scope.modelservice = Modelfactory($scope.model, $scope.selectedObjects, $scope.userCallbacks.edgeAdded || angular.noop, $scope.userCallbacks.nodeRemoved || angular.noop,  $scope.userCallbacks.edgeRemoved || angular.noop);
+    $scope.modelservice = Modelfactory($scope.model, $scope.selectedObjects, $scope.userCallbacks.edgeAdded || angular.noop, $scope.userCallbacks.nodeRemoved || angular.noop, $scope.userCallbacks.edgeRemoved || angular.noop);
 
     $scope.nodeDragging = {};
     var nodedraggingservice = Nodedraggingfactory($scope.modelservice, $scope.nodeDragging, $scope.$apply.bind($scope), $scope.automaticResize, $scope.dragAnimation);
@@ -1353,18 +1375,18 @@ if (!Function.prototype.bind) {
 
     $scope.canvasClick = $scope.modelservice.deselectAll;
 
-    $scope.drop = function(event) {
+    $scope.drop = function (event) {
       nodedraggingservice.drop(event);
       FlowchartCanvasService._notifyDrop(event);
     };
 
-    $scope.dragover = function(event) {
+    $scope.dragover = function (event) {
       nodedraggingservice.dragover(event);
       edgedraggingservice.dragover(event);
       FlowchartCanvasService._notifyDragover(event);
     };
 
-    $scope.edgeClick = function(event, edge) {
+    $scope.edgeClick = function (event, edge) {
       $scope.modelservice.edges.handleEdgeMouseClick(edge, event.ctrlKey);
       // Don't let the chart handle the mouse down.
       event.stopPropagation();
@@ -1388,21 +1410,22 @@ if (!Function.prototype.bind) {
       nodeMouseOut: mouseoverservice.nodeMouseOut,
       connectorMouseEnter: mouseoverservice.connectorMouseEnter,
       connectorMouseLeave: mouseoverservice.connectorMouseLeave,
-      nodeClicked: function(node) {
-        return function(event) {
+      nodeClicked: function (node) {
+        return function (event) {
           $scope.modelservice.nodes.handleClicked(node, event.ctrlKey);
           $scope.$apply();
 
           // Don't let the chart handle the mouse down.
           event.stopPropagation();
           event.preventDefault();
-        }
+        };
       }
     };
 
     $scope.getEdgeDAttribute = Edgedrawingservice.getEdgeDAttribute;
   }
-  canvasController.$inject = ["$scope", "Mouseoverfactory", "Nodedraggingfactory", "Modelfactory", "Edgedraggingfactory", "Edgedrawingservice", "FlowchartCanvasService"];
+
+  canvasController.$inject = ['$scope', 'Mouseoverfactory', 'Nodedraggingfactory', 'Modelfactory', 'Edgedraggingfactory', 'Edgedrawingservice', 'FlowchartCanvasService'];
 
   angular
     .module('flowchart')
@@ -1411,110 +1434,109 @@ if (!Function.prototype.bind) {
 }());
 
 
-
-(function(module) {
-try {
-  module = angular.module('flowchart-templates');
-} catch (e) {
-  module = angular.module('flowchart-templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('flowchart/canvas.html',
-    '<div ng-click="canvasClick($event)">\n' +
-    '  <svg>\n' +
-    '    <g ng-repeat="edge in model.edges">\n' +
-    '      <path\n' +
-    '        ng-click="edgeClick($event, edge)"\n' +
-    '        ng-dblclick="edgeDoubleClick($event, edge)"\n' +
-    '        ng-mouseover="edgeMouseOver($event, edge)"\n' +
-    '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
-    '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
-    '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
-    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), edgeStyle)}}"></path>\n' +
-    '    </g>\n' +
-    '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
-    '\n' +
-    '      <path class="{{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}"\n' +
-    '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle)}}"></path>\n' +
-    '      <circle class="edge-endpoint" r="4" ng-attr-cx="{{edgeDragging.dragPoint2.x}}"\n' +
-    '              ng-attr-cy="{{edgeDragging.dragPoint2.y}}"></circle>\n' +
-    '\n' +
-    '    </g>\n' +
-    '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationShadow" class="shadow-svg-class {{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}" style="display:none">\n' +
-    '      <path d=""></path>\n' +
-    '      <circle class="edge-endpoint" r="4"></circle>\n' +
-    '    </g>\n' +
-    '  </svg>\n' +
-    '  <fc-node selected="modelservice.nodes.isSelected(node)" under-mouse="node === mouseOver.node" node="node"\n' +
-    '           mouse-over-connector="mouseOver.connector"\n' +
-    '           modelservice="modelservice"\n' +
-    '           dragged-node="nodeDragging.draggedNode"\n' +
-    '           callbacks="callbacks"\n' +
-    '           user-node-callbacks="userNodeCallbacks"\n' +
-    '           ng-repeat="node in model.nodes"></fc-node>\n' +
-    '</div>\n' +
-    '');
-}]);
+(function (module) {
+  try {
+    module = angular.module('flowchart-templates');
+  } catch (e) {
+    module = angular.module('flowchart-templates', []);
+  }
+  module.run(['$templateCache', function ($templateCache) {
+    $templateCache.put('flowchart/canvas.html',
+      '<div ng-click="canvasClick($event)">\n' +
+      '  <svg>\n' +
+      '    <g ng-repeat="edge in model.edges">\n' +
+      '      <path\n' +
+      '        ng-click="edgeClick($event, edge)"\n' +
+      '        ng-dblclick="edgeDoubleClick($event, edge)"\n' +
+      '        ng-mouseover="edgeMouseOver($event, edge)"\n' +
+      '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
+      '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
+      '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
+      '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), edgeStyle)}}"></path>\n' +
+      '    </g>\n' +
+      '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
+      '\n' +
+      '      <path class="{{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}"\n' +
+      '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle)}}"></path>\n' +
+      '      <circle class="edge-endpoint" r="4" ng-attr-cx="{{edgeDragging.dragPoint2.x}}"\n' +
+      '              ng-attr-cy="{{edgeDragging.dragPoint2.y}}"></circle>\n' +
+      '\n' +
+      '    </g>\n' +
+      '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationShadow" class="shadow-svg-class {{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}" style="display:none">\n' +
+      '      <path d=""></path>\n' +
+      '      <circle class="edge-endpoint" r="4"></circle>\n' +
+      '    </g>\n' +
+      '  </svg>\n' +
+      '  <fc-node selected="modelservice.nodes.isSelected(node)" under-mouse="node === mouseOver.node" node="node"\n' +
+      '           mouse-over-connector="mouseOver.connector"\n' +
+      '           modelservice="modelservice"\n' +
+      '           dragged-node="nodeDragging.draggedNode"\n' +
+      '           callbacks="callbacks"\n' +
+      '           user-node-callbacks="userNodeCallbacks"\n' +
+      '           ng-repeat="node in model.nodes"></fc-node>\n' +
+      '</div>\n' +
+      '');
+  }]);
 })();
 
-(function(module) {
-try {
-  module = angular.module('flowchart-templates');
-} catch (e) {
-  module = angular.module('flowchart-templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('flowchart/node.html',
-    '<div\n' +
-    '  id="{{node.id}}"\n' +
-    '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px;"\n' +
-    '  ng-dblclick="callbacks.doubleClick($event)">\n' +
-    '  <div class="innerNode">\n' +
-    '    <p>{{ node.name }}</p>\n' +
-    '\n' +
-    '    <div class="{{flowchartConstants.topConnectorClass}}">\n' +
-    '      <div fc-magnet\n' +
-    '           ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.topConnectorType)">\n' +
-    '        <div fc-connector></div>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
-    '    <div class="{{flowchartConstants.bottomConnectorClass}}">\n' +
-    '      <div fc-magnet\n' +
-    '           ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.bottomConnectorType)">\n' +
-    '        <div fc-connector></div>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
-    '  </div>\n' +
-    '  <div class="fc-nodedelete" ng-click="modelservice.nodes.delete(node)">\n' +
-    '    &times;\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '');
-}]);
+(function (module) {
+  try {
+    module = angular.module('flowchart-templates');
+  } catch (e) {
+    module = angular.module('flowchart-templates', []);
+  }
+  module.run(['$templateCache', function ($templateCache) {
+    $templateCache.put('flowchart/node.html',
+      '<div\n' +
+      '  id="{{node.id}}"\n' +
+      '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px;"\n' +
+      '  ng-dblclick="callbacks.doubleClick($event)">\n' +
+      '  <div class="innerNode">\n' +
+      '    <p>{{ node.name }}</p>\n' +
+      '\n' +
+      '    <div class="{{flowchartConstants.topConnectorClass}}">\n' +
+      '      <div fc-magnet\n' +
+      '           ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.topConnectorType)">\n' +
+      '        <div fc-connector></div>\n' +
+      '      </div>\n' +
+      '    </div>\n' +
+      '    <div class="{{flowchartConstants.bottomConnectorClass}}">\n' +
+      '      <div fc-magnet\n' +
+      '           ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.bottomConnectorType)">\n' +
+      '        <div fc-connector></div>\n' +
+      '      </div>\n' +
+      '    </div>\n' +
+      '  </div>\n' +
+      '  <div class="fc-nodedelete" ng-click="modelservice.nodes.delete(node)">\n' +
+      '    &times;\n' +
+      '  </div>\n' +
+      '</div>\n' +
+      '');
+  }]);
 })();
 
-(function(module) {
-try {
-  module = angular.module('flowchart-templates');
-} catch (e) {
-  module = angular.module('flowchart-templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('flowchart/onedatanode.html',
-    '<div\n' +
-    '  id="{{node.id}}"\n' +
-    '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px; background: {{ node.color }}; border-color: {{node.borderColor}}">\n' +
-    '  <p>{{ node.name }}</p>\n' +
-    '\n' +
-    '  <div class="{{flowchartConstants.topConnectorClass}}">\n' +
-    '    <div fc-connector\n' +
-    '         ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.topConnectorType)"></div>\n' +
-    '  </div>\n' +
-    '  <div class="{{flowchartConstants.bottomConnectorClass}}">\n' +
-    '    <div fc-connector\n' +
-    '         ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.bottomConnectorType)"></div>\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '');
-}]);
+(function (module) {
+  try {
+    module = angular.module('flowchart-templates');
+  } catch (e) {
+    module = angular.module('flowchart-templates', []);
+  }
+  module.run(['$templateCache', function ($templateCache) {
+    $templateCache.put('flowchart/onedatanode.html',
+      '<div\n' +
+      '  id="{{node.id}}"\n' +
+      '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px; background: {{ node.color }}; border-color: {{node.borderColor}}">\n' +
+      '  <p>{{ node.name }}</p>\n' +
+      '\n' +
+      '  <div class="{{flowchartConstants.topConnectorClass}}">\n' +
+      '    <div fc-connector\n' +
+      '         ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.topConnectorType)"></div>\n' +
+      '  </div>\n' +
+      '  <div class="{{flowchartConstants.bottomConnectorClass}}">\n' +
+      '    <div fc-connector\n' +
+      '         ng-repeat="connector in modelservice.nodes.getConnectorsByType(node, flowchartConstants.bottomConnectorType)"></div>\n' +
+      '  </div>\n' +
+      '</div>\n' +
+      '');
+  }]);
 })();
