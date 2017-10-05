@@ -208,6 +208,7 @@ if (!Function.prototype.bind) {
         },
 
         drop: function (event) {
+      
           if (nodeDraggingScope.draggedNode) {
             return applyFunction(function () {
               nodeDraggingScope.draggedNode.x = getXCoordinate(dragOffset.x + event.clientX);
@@ -245,7 +246,7 @@ if (!Function.prototype.bind) {
           }
         },
 
-        dragend: function (event) {
+        dragend: function (event) { 
           applyFunction(function () {
             if (nodeDraggingScope.shadowElement) {
               nodeDraggingScope.draggedNode.x = parseInt(nodeDraggingScope.shadowElement.css('left').replace('px', ''));
@@ -298,10 +299,11 @@ if (!Function.prototype.bind) {
       },
       link: function (scope, element) {
         scope.flowchartConstants = flowchartConstants;
-        element.attr('draggable', 'true');
-
-        element.on('dragstart', scope.fcCallbacks.nodeDragstart(scope.node));
-        element.on('dragend', scope.fcCallbacks.nodeDragend);
+        element.attr('draggable', flowchartConstants.disableDrag ? 'false' : 'true');
+        if(!flowchartConstants.disableDrag){
+          element.on('dragstart', scope.fcCallbacks.nodeDragstart(scope.node));
+          element.on('dragend', scope.fcCallbacks.nodeDragend);
+        }
         element.on('click', scope.fcCallbacks.nodeClicked(scope.node));
         element.on('mouseover', scope.fcCallbacks.nodeMouseOver(scope.node));
         element.on('mouseout', scope.fcCallbacks.nodeMouseOut(scope.node));
@@ -871,7 +873,8 @@ if (!Function.prototype.bind) {
     curvedStyle: 'curved',
     lineStyle: 'line',
     dragAnimationRepaint: 'repaint',
-    dragAnimationShadow: 'shadow'
+    dragAnimationShadow: 'shadow',
+    disableDrag:false
   };
   constants.canvasClass = constants.htmlPrefix + '-canvas';
   constants.selectedClass = constants.htmlPrefix + '-selected';
@@ -884,7 +887,7 @@ if (!Function.prototype.bind) {
   constants.nodeClass = constants.htmlPrefix + '-node';
   constants.topConnectorClass = constants.htmlPrefix + '-' + constants.topConnectorType + 's';
   constants.bottomConnectorClass = constants.htmlPrefix + '-' + constants.bottomConnectorType + 's';
-  constants.canvasResizeThreshold = 200;
+  constants.canvasResizeThreshold = 5;
   constants.canvasResizeStep = 200;
 
   angular
@@ -964,7 +967,6 @@ if (!Function.prototype.bind) {
 
       edgedraggingService.dragstart = function (connector) {
         return function (event) {
-
           if (connector.type === flowchartConstants.topConnectorType) {
             for (var i = 0; i < model.edges.length; i++) {
               if (model.edges[i].destination === connector.id) {
@@ -1296,7 +1298,8 @@ if (!Function.prototype.bind) {
         automaticResize: '=?',
         dragAnimation: '=?',
         nodeWidth: '=?',
-        nodeHeight: '=?'
+        nodeHeight: '=?',
+        disableDrag: '=?'
       },
       controller: 'canvasController',
       link: function (scope, element) {
@@ -1312,7 +1315,7 @@ if (!Function.prototype.bind) {
             element.css('height', Math.max(maxY, element.prop('offsetHeight')) + 'px');
           }
         }
-
+        flowchartConstants.disableDrag = scope.disableDrag;
         if (scope.edgeStyle !== flowchartConstants.curvedStyle && scope.edgeStyle !== flowchartConstants.lineStyle) {
           throw new Error('edgeStyle not supported.');
         }
@@ -1507,7 +1510,7 @@ if (!Function.prototype.bind) {
       '      </div>\n' +
       '    </div>\n' +
       '  </div>\n' +
-      '  <div class="fc-nodedelete" ng-click="modelservice.nodes.delete(node)">\n' +
+      '  <div class="fc-nodedelete" ng-show="!flowchartConstants.disableDrag" ng-click="modelservice.nodes.delete(node)">\n' +
       '    &times;\n' +
       '  </div>\n' +
       '</div>\n' +
